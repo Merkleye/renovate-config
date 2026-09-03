@@ -1,0 +1,273 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Org-wide Renovate config for Merkleye. Applied automatically to every repo in the org via Renovate's inherited config -- no per-repo extends needed.",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+    ":semanticCommits",
+    ":semanticCommitTypeAll(chore)",
+    ":semanticCommitScope(deps)"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "timezone": "America/New_York",
+  "hostRules": [
+    {
+      "description": "@merkleye/design-tokens lives in GitHub Packages, which rejects anonymous reads even for public packages.",
+      "matchHost": "npm.pkg.github.com",
+      "hostType": "npm",
+      "token": "{{ secrets.GH_PACKAGES_TOKEN }}"
+    }
+  ],
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "lockFileMaintenance": {
+    "description": "Refresh transitive deps in package-lock.json, not just the ranges in package.json.",
+    "enabled": true,
+    "schedule": [
+      "before 6am on monday"
+    ]
+  },
+  "packageRules": [
+    {
+      "description": "GitHub Actions, non-major. Pinned to SHAs by helpers:pinGitHubActionDigests, so most updates arrive here as digest bumps.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "Actions Minor"
+    },
+    {
+      "description": "GitHub Actions, major -- reviewed separately since these can be breaking.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Actions Major"
+    },
+    {
+      "description": "mise-managed toolchain pins (mise.toml: node), non-major.",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "Mise Minor"
+    },
+    {
+      "description": "mise-managed toolchain pins, major -- reviewed separately since these can be breaking.",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Mise Major"
+    },
+    {
+      "description": "npm dependencies and devDependencies, non-major.",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "NPM Minor"
+    },
+    {
+      "description": "npm dependencies, major -- reviewed separately since these can be breaking.",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "NPM Major"
+    },
+    {
+      "description": "Container base images (Containerfile, docker-compose*.yml), non-major.",
+      "matchManagers": [
+        "dockerfile",
+        "docker-compose"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "Docker Minor"
+    },
+    {
+      "description": "Container base images, major -- reviewed separately since these can be breaking.",
+      "matchManagers": [
+        "dockerfile",
+        "docker-compose"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Docker Major"
+    },
+    {
+      "description": "The node pin is duplicated in mise.toml and Containerfile -- bump both in one PR. Non-major.",
+      "matchPackageNames": [
+        "node",
+        "docker.io/library/node"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "Node Minor"
+    },
+    {
+      "description": "The node pin is duplicated in mise.toml and Containerfile -- bump both in one PR. Major.",
+      "matchPackageNames": [
+        "node",
+        "docker.io/library/node"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Node Major"
+    },
+    {
+      "description": "React runtime and its types must move together. Non-major.",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "React Minor"
+    },
+    {
+      "description": "React runtime and its types must move together. Major.",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "React Major"
+    },
+    {
+      "description": "Vite toolchain -- vite, its react plugin, and vitest share a version surface. Non-major.",
+      "matchPackageNames": [
+        "vite",
+        "@vitejs/plugin-react",
+        "vitest"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "Vite Minor"
+    },
+    {
+      "description": "Vite toolchain -- vite, its react plugin, and vitest share a version surface. Major.",
+      "matchPackageNames": [
+        "vite",
+        "@vitejs/plugin-react",
+        "vitest"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Vite Major"
+    },
+    {
+      "description": "ESLint stack -- eslint and typescript-eslint break apart. Non-major.",
+      "matchPackageNames": [
+        "eslint",
+        "@eslint/js",
+        "typescript-eslint",
+        "eslint-plugin-react-hooks"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "ESLint Minor"
+    },
+    {
+      "description": "ESLint stack -- eslint and typescript-eslint break apart. Major.",
+      "matchPackageNames": [
+        "eslint",
+        "@eslint/js",
+        "typescript-eslint",
+        "eslint-plugin-react-hooks"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "ESLint Major"
+    },
+    {
+      "description": "Tailwind core and its vite plugin are released in lockstep. Non-major.",
+      "matchPackageNames": [
+        "tailwindcss",
+        "@tailwindcss/vite"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "Tailwind Minor"
+    },
+    {
+      "description": "Tailwind core and its vite plugin are released in lockstep. Major.",
+      "matchPackageNames": [
+        "tailwindcss",
+        "@tailwindcss/vite"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Tailwind Major"
+    }
+  ]
+}

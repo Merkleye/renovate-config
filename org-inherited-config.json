@@ -56,6 +56,43 @@
       "groupName": "Actions Major"
     },
     {
+      "description": "Go modules: regenerate go.sum. Renovate rewrites go.mod but only reconciles go.sum when told to, so without gomodTidy a branch lands with go.mod bumped and go.sum stale -- every Go job then fails at module load with 'missing go.sum entry' before a single test runs. See Merkleye/merkleye#5.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "postUpdateOptions": [
+        "gomodTidy"
+      ]
+    },
+    {
+      "description": "Go modules, non-major.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "Go Minor"
+    },
+    {
+      "description": "Go modules, major -- reviewed separately since these can be breaking. gomodUpdateImportPaths rewrites /vN import paths in .go files, which a major module bump needs. gomodTidy is repeated here because postUpdateOptions from a later matching rule replaces the earlier value rather than merging with it.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Go Major",
+      "postUpdateOptions": [
+        "gomodTidy",
+        "gomodUpdateImportPaths"
+      ]
+    },
+    {
       "description": "mise-managed toolchain pins (mise.toml: node), non-major.",
       "matchManagers": [
         "mise"

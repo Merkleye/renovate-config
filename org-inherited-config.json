@@ -56,6 +56,53 @@
       "groupName": "Actions Major"
     },
     {
+      "description": "Go modules: regenerate go.sum. Renovate rewrites go.mod but only reconciles go.sum when told to, so without gomodTidy a branch lands with go.mod bumped and go.sum stale -- every Go job then fails at module load with 'missing go.sum entry' before a single test runs.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "postUpdateOptions": [
+        "gomodTidy"
+      ]
+    },
+    {
+      "description": "Go modules, non-major.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "bump"
+      ],
+      "groupName": "Go Minor"
+    },
+    {
+      "description": "Go modules, major -- reviewed separately since these can be breaking. gomodUpdateImportPaths rewrites /vN import paths in .go files, which a major module bump needs. gomodTidy is repeated here because postUpdateOptions from a later matching rule replaces the earlier value rather than merging with it.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "Go Major",
+      "postUpdateOptions": [
+        "gomodTidy",
+        "gomodUpdateImportPaths"
+      ]
+    },
+    {
+      "description": "Go indirect dependencies, which Renovate skips by default. Go records tool directives as // indirect, so leaving the default in place means the tools themselves are never updated -- merkleye's govulncheck (golang.org/x/vuln) and gotestsum are both tool directives, and a security scanner pinned to an aging version fails quietly. These land in the Go Minor/Go Major groups above rather than as separate PRs, and gomodTidy reconciles go.sum for them.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "indirect"
+      ],
+      "enabled": true
+    },
+    {
       "description": "mise-managed toolchain pins (mise.toml: node), non-major.",
       "matchManagers": [
         "mise"

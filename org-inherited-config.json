@@ -1,6 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Org-wide Renovate config for Merkleye. Applied automatically to every repo in the org via Renovate's inherited config -- no per-repo extends needed.",
+  "description": [
+    "Org-wide Renovate config for Merkleye. Applied automatically to every repo in the org via Renovate's inherited config -- no per-repo extends needed."
+  ],
   "extends": [
     "config:recommended",
     "helpers:pinGitHubActionDigests",
@@ -14,7 +16,9 @@
   "timezone": "America/New_York",
   "hostRules": [
     {
-      "description": "@merkleye/design-tokens lives in GitHub Packages, which rejects anonymous reads even for public packages.",
+      "description": [
+        "@merkleye/design-tokens lives in GitHub Packages, which rejects anonymous reads even for public packages."
+      ],
       "matchHost": "npm.pkg.github.com",
       "hostType": "npm",
       "token": "{{ secrets.GH_PACKAGES_TOKEN }}"
@@ -24,7 +28,9 @@
     "before 6am on monday"
   ],
   "lockFileMaintenance": {
-    "description": "Refresh transitive deps in package-lock.json, not just the ranges in package.json.",
+    "description": [
+      "Refresh transitive deps in package-lock.json, not just the ranges in package.json."
+    ],
     "enabled": true,
     "schedule": [
       "before 6am on monday"
@@ -32,7 +38,9 @@
   },
   "packageRules": [
     {
-      "description": "GitHub Actions, non-major. Pinned to SHAs by helpers:pinGitHubActionDigests, so most updates arrive here as digest bumps.",
+      "description": [
+        "GitHub Actions, non-major. Pinned to SHAs by helpers:pinGitHubActionDigests, so most updates arrive here as digest bumps."
+      ],
       "matchManagers": [
         "github-actions"
       ],
@@ -46,7 +54,9 @@
       "groupName": "Actions Minor"
     },
     {
-      "description": "GitHub Actions, major -- reviewed separately since these can be breaking.",
+      "description": [
+        "GitHub Actions, major -- reviewed separately since these can be breaking."
+      ],
       "matchManagers": [
         "github-actions"
       ],
@@ -56,7 +66,9 @@
       "groupName": "Actions Major"
     },
     {
-      "description": "Go modules: regenerate go.sum. Renovate rewrites go.mod but only reconciles go.sum when told to, so without gomodTidy a branch lands with go.mod bumped and go.sum stale -- every Go job then fails at module load with 'missing go.sum entry' before a single test runs.",
+      "description": [
+        "Go modules: regenerate go.sum. Renovate rewrites go.mod but only reconciles go.sum when told to, so without gomodTidy a branch lands with go.mod bumped and go.sum stale -- every Go job then fails at module load with 'missing go.sum entry' before a single test runs."
+      ],
       "matchManagers": [
         "gomod"
       ],
@@ -65,7 +77,9 @@
       ]
     },
     {
-      "description": "Go modules, non-major.",
+      "description": [
+        "Go modules, non-major."
+      ],
       "matchManagers": [
         "gomod"
       ],
@@ -79,7 +93,9 @@
       "groupName": "Go Minor"
     },
     {
-      "description": "Go modules, major -- reviewed separately since these can be breaking. gomodUpdateImportPaths rewrites /vN import paths in .go files, which a major module bump needs. gomodTidy is repeated here because postUpdateOptions from a later matching rule replaces the earlier value rather than merging with it.",
+      "description": [
+        "Go modules, major -- reviewed separately since these can be breaking. gomodUpdateImportPaths rewrites /vN import paths in .go files, which a major module bump needs. gomodTidy is repeated here because postUpdateOptions from a later matching rule replaces the earlier value rather than merging with it."
+      ],
       "matchManagers": [
         "gomod"
       ],
@@ -93,7 +109,9 @@
       ]
     },
     {
-      "description": "Go indirect dependencies, which Renovate skips by default. Go records tool directives as // indirect, so leaving the default in place means the tools themselves are never updated -- merkleye's govulncheck (golang.org/x/vuln) and gotestsum are both tool directives, and a security scanner pinned to an aging version fails quietly. These land in the Go Minor/Go Major groups above rather than as separate PRs, and gomodTidy reconciles go.sum for them.",
+      "description": [
+        "Go indirect dependencies, which Renovate skips by default. Go records tool directives as // indirect, so leaving the default in place means the tools themselves are never updated -- merkleye's govulncheck (golang.org/x/vuln) and gotestsum are both tool directives, and a security scanner pinned to an aging version fails quietly. These land in the Go Minor/Go Major groups above rather than as separate PRs, and gomodTidy reconciles go.sum for them."
+      ],
       "matchManagers": [
         "gomod"
       ],
@@ -103,7 +121,9 @@
       "enabled": true
     },
     {
-      "description": "mise-managed toolchain pins (mise.toml: node), non-major.",
+      "description": [
+        "mise-managed toolchain pins (mise.toml: node), non-major."
+      ],
       "matchManagers": [
         "mise"
       ],
@@ -117,7 +137,9 @@
       "groupName": "Mise Minor"
     },
     {
-      "description": "mise-managed toolchain pins, major -- reviewed separately since these can be breaking.",
+      "description": [
+        "mise-managed toolchain pins, major -- reviewed separately since these can be breaking."
+      ],
       "matchManagers": [
         "mise"
       ],
@@ -127,7 +149,9 @@
       "groupName": "Mise Major"
     },
     {
-      "description": "npm dependencies and devDependencies, non-major.",
+      "description": [
+        "npm dependencies and devDependencies, non-major."
+      ],
       "matchManagers": [
         "npm"
       ],
@@ -141,7 +165,9 @@
       "groupName": "NPM Minor"
     },
     {
-      "description": "npm dependencies, major -- reviewed separately since these can be breaking.",
+      "description": [
+        "npm dependencies, major -- reviewed separately since these can be breaking."
+      ],
       "matchManagers": [
         "npm"
       ],
@@ -151,7 +177,9 @@
       "groupName": "NPM Major"
     },
     {
-      "description": "Container base images (Containerfile, docker-compose*.yml), non-major.",
+      "description": [
+        "Container base images (Containerfile, docker-compose*.yml), non-major."
+      ],
       "matchManagers": [
         "dockerfile",
         "docker-compose"
@@ -166,7 +194,9 @@
       "groupName": "Docker Minor"
     },
     {
-      "description": "Container base images, major -- reviewed separately since these can be breaking.",
+      "description": [
+        "Container base images, major -- reviewed separately since these can be breaking."
+      ],
       "matchManagers": [
         "dockerfile",
         "docker-compose"
@@ -177,7 +207,9 @@
       "groupName": "Docker Major"
     },
     {
-      "description": "The node pin is duplicated in mise.toml and Containerfile -- bump both in one PR. Non-major.",
+      "description": [
+        "The node pin is duplicated in mise.toml and Containerfile -- bump both in one PR. Non-major."
+      ],
       "matchPackageNames": [
         "node",
         "docker.io/library/node"
@@ -192,7 +224,9 @@
       "groupName": "Node Minor"
     },
     {
-      "description": "The node pin is duplicated in mise.toml and Containerfile -- bump both in one PR. Major.",
+      "description": [
+        "The node pin is duplicated in mise.toml and Containerfile -- bump both in one PR. Major."
+      ],
       "matchPackageNames": [
         "node",
         "docker.io/library/node"
@@ -203,7 +237,9 @@
       "groupName": "Node Major"
     },
     {
-      "description": "React runtime and its types must move together. Non-major.",
+      "description": [
+        "React runtime and its types must move together. Non-major."
+      ],
       "matchPackageNames": [
         "react",
         "react-dom",
@@ -220,7 +256,9 @@
       "groupName": "React Minor"
     },
     {
-      "description": "React runtime and its types must move together. Major.",
+      "description": [
+        "React runtime and its types must move together. Major."
+      ],
       "matchPackageNames": [
         "react",
         "react-dom",
@@ -233,7 +271,9 @@
       "groupName": "React Major"
     },
     {
-      "description": "Vite toolchain -- vite, its react plugin, and vitest share a version surface. Non-major.",
+      "description": [
+        "Vite toolchain -- vite, its react plugin, and vitest share a version surface. Non-major."
+      ],
       "matchPackageNames": [
         "vite",
         "@vitejs/plugin-react",
@@ -249,7 +289,9 @@
       "groupName": "Vite Minor"
     },
     {
-      "description": "Vite toolchain -- vite, its react plugin, and vitest share a version surface. Major.",
+      "description": [
+        "Vite toolchain -- vite, its react plugin, and vitest share a version surface. Major."
+      ],
       "matchPackageNames": [
         "vite",
         "@vitejs/plugin-react",
@@ -261,7 +303,9 @@
       "groupName": "Vite Major"
     },
     {
-      "description": "ESLint stack -- eslint and typescript-eslint break apart. Non-major.",
+      "description": [
+        "ESLint stack -- eslint and typescript-eslint break apart. Non-major."
+      ],
       "matchPackageNames": [
         "eslint",
         "@eslint/js",
@@ -278,7 +322,9 @@
       "groupName": "ESLint Minor"
     },
     {
-      "description": "ESLint stack -- eslint and typescript-eslint break apart. Major.",
+      "description": [
+        "ESLint stack -- eslint and typescript-eslint break apart. Major."
+      ],
       "matchPackageNames": [
         "eslint",
         "@eslint/js",
@@ -291,7 +337,9 @@
       "groupName": "ESLint Major"
     },
     {
-      "description": "Tailwind core and its vite plugin are released in lockstep. Non-major.",
+      "description": [
+        "Tailwind core and its vite plugin are released in lockstep. Non-major."
+      ],
       "matchPackageNames": [
         "tailwindcss",
         "@tailwindcss/vite"
@@ -306,7 +354,9 @@
       "groupName": "Tailwind Minor"
     },
     {
-      "description": "Tailwind core and its vite plugin are released in lockstep. Major.",
+      "description": [
+        "Tailwind core and its vite plugin are released in lockstep. Major."
+      ],
       "matchPackageNames": [
         "tailwindcss",
         "@tailwindcss/vite"

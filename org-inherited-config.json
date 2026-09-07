@@ -56,7 +56,7 @@
       "groupName": "Actions Major"
     },
     {
-      "description": "Go modules: regenerate go.sum. Renovate rewrites go.mod but only reconciles go.sum when told to, so without gomodTidy a branch lands with go.mod bumped and go.sum stale -- every Go job then fails at module load with 'missing go.sum entry' before a single test runs. See Merkleye/merkleye#5.",
+      "description": "Go modules: regenerate go.sum. Renovate rewrites go.mod but only reconciles go.sum when told to, so without gomodTidy a branch lands with go.mod bumped and go.sum stale -- every Go job then fails at module load with 'missing go.sum entry' before a single test runs.",
       "matchManagers": [
         "gomod"
       ],

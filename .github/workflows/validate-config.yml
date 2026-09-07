@@ -1,0 +1,62 @@
+# Validates org-inherited-config.json the way Renovate actually loads it.
+#
+# This file is applied to every repo in the org through config inheritance, so
+# a config Renovate rejects does not degrade gracefully: mergeInheritedConfig
+# throws CONFIG_VALIDATION during the init phase and the run stops before a
+# single dependency is looked up. Every repo goes quiet at once, the only
+# signal is a generic "Action Required: Fix Renovate Configuration" issue with
+# no detail in it, and the stale dependency dashboards keep showing whatever
+# they last said -- which reads like Renovate is working.
+#
+# That is not hypothetical. A config landed on 2026-09-02 whose `description`
+# fields were plain strings; inherited config requires string[]. Renovate
+# stopped running org-wide for four days and the dashboards kept displaying
+# results from the last good run.
+#
+# Two reasons this calls validateConfig directly instead of the packaged
+# `renovate-config-validator` CLI:
+#   - that CLI only ever validates as "global" or "repo", never "inherit",
+#     so it does not check the rules this file is actually held to;
+#   - the published renovate-schema.json allows `description` as string OR
+#     string[], so JSON-schema validation passes a config Renovate rejects.
+# Only the runtime validator in inherit mode reproduces what Mend does.
+#
+# Pinned to the major tag: validation semantics are stable within a major, and
+# a major bump is precisely when this should be re-checked rather than silently
+# adopted.
+name: Validate config
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  inherit-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Validate org-inherited-config.json in inherit mode
+        run: |
+          docker run --rm \
+            -v "$PWD/org-inherited-config.json:/tmp/cfg.json:ro" \
+            --entrypoint node renovate/renovate:44 -e '
+              (async () => {
+                const fs = require("fs");
+                const v = await import("/usr/local/renovate/dist/config/validation.js");
+                const cfg = JSON.parse(fs.readFileSync("/tmp/cfg.json", "utf8"));
+                const res = await v.validateConfig("inherit", cfg);
+                for (const w of res.warnings) console.log("WARNING: " + w.message);
+                for (const e of res.errors) console.log("ERROR:   " + e.message);
+                if (res.errors.length) {
+                  console.log("\n" + res.errors.length + " error(s). Renovate would abort in the init phase for every repo in the org.");
+                  process.exit(1);
+                }
+                console.log("inherit-mode validation passed with no errors.");
+              })();
+            '

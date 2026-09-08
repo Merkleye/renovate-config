@@ -67,6 +67,18 @@
     },
     {
       "description": [
+        "Merkleye's own reusable workflows are referenced by @main on purpose -- callers are meant to track the templates as they land, so pinning them to a SHA freezes every repo on whatever main happened to be that Monday and turns a one-line template fix into a Renovate PR in every repo of the org. helpers:pinGitHubActionDigests above is for third-party actions, where an unpinned mutable ref is a supply-chain risk we do not control; our own org is not that. Regex rather than a glob because Renovate lowercases the package name it matches against (the PR reads merkleye/github-templates) while the workflow files say Merkleye -- a case-sensitive glob would silently never match. pinDigests only, not enabled:false: a repo that has already been pinned should keep getting digest bumps rather than sitting frozen at a stale SHA forever."
+      ],
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchPackageNames": [
+        "/^merkleye\\//i"
+      ],
+      "pinDigests": false
+    },
+    {
+      "description": [
         "Go modules: regenerate go.sum. Renovate rewrites go.mod but only reconciles go.sum when told to, so without gomodTidy a branch lands with go.mod bumped and go.sum stale -- every Go job then fails at module load with 'missing go.sum entry' before a single test runs."
       ],
       "matchManagers": [
